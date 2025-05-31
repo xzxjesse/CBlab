@@ -1,0 +1,25 @@
+{
+  "name": "CBlab",
+  "version": "1.0.0",
+  "description": "Este projeto contém testes automatizados utilizando Cypress para validar o fluxo de definição e validação de endereço, garantindo qualidade e confiabilidade no sistema.",
+  "main": "index.js",
+  "scripts": {
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "test": "cypress run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xzxjesse/CBlab.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xzxjesse/CBlab/issues"
+  },
+  "homepage": "https://github.com/xzxjesse/CBlab#readme",
+  "devDependencies": {
+    "cypress": "^14.4.0"
+  }
+}
