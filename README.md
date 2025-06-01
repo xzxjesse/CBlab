@@ -16,6 +16,7 @@ Este projeto contém testes automatizados utilizando Cypress para validar o flux
 * [Estrutura do Projeto](#estrutura-do-projeto)
 * [Entregáveis](#entregáveis)
    * [Análise de Fluxos Críticos](./docs/FluxosCriticos.md)
+   * [Relatório de Testes UI - Fluxo de Endereço](docs/RelatorioUI.md)
 * [Contribuição](#contribuição)
 * [Licença](#licença)
 
@@ -104,8 +105,8 @@ npx cypress open
 │   ├── support/
 │   └── results/
 ├── docs/
-│   ├── ENTREGAVEIS.md
-│   └── FLUXOS_CRITICOS.md
+│   ├── FluxosCticos.md
+│   └── RelatorioUI.md
 ├── .github/
 │   └── workflows/
 ├── .gitignore
@@ -122,6 +123,7 @@ npx cypress open
 Os entregáveis do projeto, incluindo a análise de fluxos críticos e documentação dos testes, estão disponíveis na pasta `docs/`:
 
 - [Análise de Fluxos Críticos](./docs/FluxosCriticos.md)
+- [Relatório de Testes UI - Fluxo de Endereço](docs/RelatorioUI.md)
 
 ---
 
