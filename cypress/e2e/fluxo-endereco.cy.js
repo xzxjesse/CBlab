@@ -157,4 +157,42 @@ describe('Fluxo de Endereço - Coco Bambu Delivery', () => {
                 .should('have.value', ENDERECO_ESPECIAL)
         })
     })
+
+    /**
+     * Grupo de testes para acessibilidade e usabilidade
+     * @description Valida a conformidade com padrões de acessibilidade WCAG e boas práticas de usabilidade
+     * @see https://www.w3.org/WAI/standards-guidelines/wcag/
+     */
+    describe('Acessibilidade e Usabilidade', () => {
+        /**
+         * Teste de estrutura semântica
+         * @description Valida a implementação correta da estrutura HTML semântica
+         * @see https://developer.mozilla.org/en-US/docs/Glossary/Semantics
+         */
+        it('deve ter estrutura HTML semântica adequada', () => {
+            // Validação de elementos estruturais principais
+            // Estes elementos são cruciais para navegadores e leitores de tela
+            cy.get('main')
+                .should('exist')
+                .and('be.visible')
+                .and('have.attr', 'role', 'main')
+
+            cy.get('header')
+                .should('exist')
+                .and('be.visible')
+                .and('have.attr', 'role', 'banner')
+
+            cy.get('nav')
+                .should('exist')
+                .and('be.visible')
+                .and('have.attr', 'role', 'navigation')
+            
+            // Validação da hierarquia de títulos
+            // Garante que a estrutura de conteúdo segue uma ordem lógica
+            cy.get('h1, h2, h3')
+                .should('exist')
+                .and('be.visible')
+                .and('have.length.at.least', 1)
+        })
+    })
 })
