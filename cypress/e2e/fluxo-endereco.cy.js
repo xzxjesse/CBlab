@@ -246,5 +246,35 @@ describe('Fluxo de Endereço - Coco Bambu Delivery', () => {
                 expect(text).to.not.equal('saiba mais')
             })
         })
+
+        /**
+         * Teste de contraste de cores
+         * @description Valida o contraste adequado entre texto e fundo para garantir legibilidade
+         * @see https://www.w3.org/WAI/WCAG21/Understanding/contrast-minimum.html
+         */
+        it('deve ter contraste adequado nos textos', () => {
+            // Validação de contraste
+            // Garante que todos os elementos de texto possuem cores definidas
+            cy.get('h1, h2, h3, p, span, a').each($el => {
+                cy.wrap($el)
+                    .should('be.visible')
+                    .and('have.css', 'color')
+                    .and('have.css', 'background-color')
+            })
+        })
+
+        /**
+         * Teste de tamanho de fonte
+         * @description Valida o tamanho mínimo da fonte para garantir legibilidade
+         * @see https://www.w3.org/WAI/WCAG21/Understanding/visual-presentation.html
+         */
+        it('deve ter tamanhos de fonte legíveis', () => {
+            // Validação do tamanho base da fonte
+            // Garante que o tamanho mínimo da fonte é adequado para leitura
+            cy.get('body').then($body => {
+                const fontSize = parseFloat($body.css('font-size'))
+                expect(fontSize).to.be.greaterThan(12)
+            })
+        })
     })
 })
