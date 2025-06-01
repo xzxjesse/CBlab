@@ -20,6 +20,6 @@
   },
   "homepage": "https://github.com/xzxjesse/CBlab#readme",
   "devDependencies": {
-    "cypress": "^14.4.0"
+    "cypress": "^12.17.4"
   }
 }
