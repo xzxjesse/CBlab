@@ -9,10 +9,13 @@ Este projeto contém testes automatizados utilizando Cypress para validar o flux
 * [Repositório](#repositório)
 * [Pré-requisitos](#pré-requisitos)
 * [Configuração do Ambiente](#configuração-do-ambiente)
-* [Instalação](#instalação)
 * [Execução dos Testes](#execução-dos-testes)
+  * [Modo Headless](#rodar-todos-os-testes-em-modo-headless-sem-interface-gráfica)
+  * [Interface Gráfica](#abrir-o-cypress-test-runner-interface-gráfica)
+  * [Resultados e Relatórios](#resultados-e-relatórios)
 * [Estrutura do Projeto](#estrutura-do-projeto)
-* [Boas Práticas](#boas-práticas)
+* [Entregáveis](#entregáveis)
+* [Análise de Fluxos Críticos](#análise-de-fluxos-críticos)
 * [Contribuição](#contribuição)
 * [Licença](#licença)
 
@@ -95,20 +98,30 @@ npx cypress open
 │   ├── e2e/
 │   ├── support/
 │   └── results/
+.
+├── cypress/
+│   ├── e2e/
+│   ├── support/
+│   └── results/
+├── docs/
+│   ├── ENTREGAVEIS.md
+│   └── FLUXOS_CRITICOS.md
+├── .github/
+│   └── workflows/
+├── .gitignore
+└── README.md
 ├── .github/
 │   └── workflows/
 ├── .gitignore
 └── README.md
 ```
-
 ---
 
-## Boas Práticas
+## Entregáveis
 
-* Commits claros e no imperativo
-* Código organizado e nomes significativos
-* Testes isolados e cobertura adequada
-* CI/CD automatizado
+Os entregáveis do projeto, incluindo a análise de fluxos críticos e documentação dos testes, estão disponíveis na pasta `docs/`:
+
+- [Análise de Fluxos Críticos](./docs/FluxosCriticos.md)
 
 ---
 
