@@ -15,7 +15,7 @@ Este projeto contém testes automatizados utilizando Cypress para validar o flux
   * [Resultados e Relatórios](#resultados-e-relatórios)
 * [Estrutura do Projeto](#estrutura-do-projeto)
 * [Entregáveis](#entregáveis)
-* [Análise de Fluxos Críticos](#análise-de-fluxos-críticos)
+   * [Análise de Fluxos Críticos](./docs/FluxosCriticos.md)
 * [Contribuição](#contribuição)
 * [Licença](#licença)
 
