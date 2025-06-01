@@ -194,5 +194,57 @@ describe('Fluxo de Endereço - Coco Bambu Delivery', () => {
                 .and('be.visible')
                 .and('have.length.at.least', 1)
         })
+
+        /**
+         * Teste de atributos ARIA
+         * @description Valida a presença e corretude dos atributos ARIA em elementos interativos
+         * @see https://www.w3.org/WAI/ARIA/apg/
+         */
+        it('deve ter atributos ARIA nos elementos interativos', () => {
+            // Validação do campo de entrada de endereço
+            // Garante que o input possui os atributos necessários para leitores de tela
+            cy.get('input.search-address-input')
+                .should('have.attr', 'aria-label')
+                .and('have.attr', 'role', 'textbox')
+
+            // Validação dos botões da interface
+            // Verifica se todos os botões possuem os atributos ARIA necessários
+            cy.get('button').each($btn => {
+                cy.wrap($btn)
+                    .should('have.attr', 'aria-label')
+                    .and('have.attr', 'role', 'button')
+            })
+        })
+
+        /**
+         * Teste de textos alternativos em imagens
+         * @description Valida a presença e qualidade dos textos alternativos em elementos de imagem
+         * @see https://www.w3.org/WAI/tips/writing/#write-meaningful-alt-text-for-images
+         */
+        it('deve ter textos alternativos em imagens', () => {
+            // Validação de textos alternativos
+            // Garante que todas as imagens possuem descrições significativas
+            cy.get('img').each($img => {
+                cy.wrap($img)
+                    .should('have.attr', 'alt')
+                    .and('not.be.empty')
+            })
+        })
+
+        /**
+         * Teste de textos descritivos em links
+         * @description Valida a qualidade e descritividade dos textos em elementos de link
+         * @see https://www.w3.org/WAI/tips/writing/#write-link-text-that-describes-the-destination
+         */
+        it('deve ter links com textos descritivos', () => {
+            // Validação de textos em links
+            // Garante que os links possuem textos significativos e descritivos
+            cy.get('a').each($link => {
+                const text = $link.text()
+                expect(text).to.not.be.empty
+                expect(text).to.not.equal('clique aqui')
+                expect(text).to.not.equal('saiba mais')
+            })
+        })
     })
 })
