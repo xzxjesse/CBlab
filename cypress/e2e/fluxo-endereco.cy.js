@@ -71,4 +71,39 @@ describe('Fluxo de Endereço - Coco Bambu Delivery', () => {
                 )
         })
     })
+
+    // Grupo de testes para manipulação do campo
+    describe('Manipulação do Campo', () => {
+        it('deve permitir limpar o campo de endereço', () => {
+            // Insere um endereço
+            cy.get('input.search-address-input')
+                .clear()
+                .type(`${ENDERECO_VALIDO}{enter}`)
+                .should('have.value', ENDERECO_VALIDO)
+
+            // Limpa o campo
+            cy.get('input.search-address-input')
+                .clear()
+                .should('have.value', '')
+        })
+
+        it('deve lidar com entradas curtas sem avançar', () => {
+            cy.get('input.search-address-input')
+                .clear()
+                .type(`${ENDERECO_CURTO}{enter}`)
+                .should('have.value', ENDERECO_CURTO)
+
+            // Validação de não avanço
+            cy.url({ timeout: 5000 })
+                .should('include', '/delivery')
+                .and('not.include', '/cardapio')
+        })
+
+        it('deve aceitar caracteres especiais no endereço', () => {
+            cy.get('input.search-address-input')
+                .clear()
+                .type(`${ENDERECO_ESPECIAL}{enter}`)
+                .should('have.value', ENDERECO_ESPECIAL)
+        })
+    })
 }) 
