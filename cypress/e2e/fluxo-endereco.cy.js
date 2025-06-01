@@ -9,7 +9,7 @@ describe('Fluxo de Endereço - Coco Bambu Delivery', () => {
     // Setup comum para todos os testes
     beforeEach(() => {
       cy.visit('https://app-hom.cocobambu.com/delivery')
-      cy.wait(3000) // Aguarda carregamento inicial
+      cy.wait(3000)
     })
   
     // Grupo de testes para fluxo principal
@@ -32,5 +32,22 @@ describe('Fluxo de Endereço - Coco Bambu Delivery', () => {
             url.includes('/delivery') || url.includes('/cardapio')
           )
       })
+
+        it('deve bloquear avanço ao inserir endereço inválido', () => {
+            cy.get('input.search-address-input')
+            .should('be.visible')
+            .and('be.enabled')
+            .clear()
+            .type(`${ENDERECO_INVALIDO}{enter}`)
+    
+            // Validações do estado após inserção inválida
+            cy.get('input.search-address-input')
+            .should('have.value', ENDERECO_INVALIDO)
+    
+            // Validação de não avanço
+            cy.url({ timeout: 5000 })
+            .should('include', '/delivery')
+            .and('not.include', '/cardapio')
+        })
     })
   }) 
