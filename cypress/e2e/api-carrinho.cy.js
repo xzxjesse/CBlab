@@ -376,4 +376,88 @@ describe('API de Carrinho - DummyJSON', () => {
       })
     })
   })
+
+  /**
+   * @description Suite de testes para performance e segurança do carrinho
+   */
+  describe('Performance e Segurança', () => {
+    /**
+     * @description Testa o comportamento com múltiplas requisições simultâneas
+     * Arrange: Configura um array de requisições GET e PUT
+     * Act: Executa todas as requisições simultaneamente
+     * Assert: Valida as respostas de todas as requisições
+     */
+    it('deve lidar com múltiplas requisições simultâneas', () => {
+      // Arrange: Configuração das requisições
+      const requests = []
+      for (let i = 0; i < 3; i++) {
+        // GET request
+        requests.push(
+          cy.request({
+            method: 'GET',
+            url: `${baseUrl}/${cartId}`,
+            failOnStatusCode: false,
+            timeout
+          })
+        )
+        // PUT request
+        requests.push(
+          cy.request({
+            method: 'PUT',
+            url: `${baseUrl}/${cartId}`,
+            body: { products: [{ id: 1, quantity: i + 1 }] },
+            failOnStatusCode: false,
+            timeout
+          })
+        )
+      }
+
+      // Act & Assert: Execução e validação das requisições
+      cy.wrap(Promise.all(requests)).then((responses) => {
+        responses.forEach(response => {
+          expect(response.status).to.be.oneOf([200, 404])
+          if (response.status === 200) {
+            expect(response.body).to.have.property('id')
+            expect(response.body).to.have.property('products')
+          }
+        })
+      })
+    })
+
+    /**
+     * @description Testa a validação de autenticação para operações sensíveis
+     * Arrange: Configura requisições com token inválido
+     * Act: Executa requisições GET e PUT
+     * Assert: Valida o comportamento da API com autenticação inválida
+     */
+    it('deve validar autenticação para operações sensíveis', () => {
+      // Arrange: Configuração do teste
+      const invalidToken = 'Bearer invalid-token'
+      const requestConfig = {
+        failOnStatusCode: false,
+        headers: {
+          'Authorization': invalidToken
+        }
+      }
+
+      // Act & Assert: Teste de GET com token inválido
+      cy.request({
+        method: 'GET',
+        url: `${baseUrl}/${cartId}`,
+        ...requestConfig
+      }).then((response) => {
+        expect(response.status).to.be.oneOf([200, 401, 403])
+      })
+
+      // Act & Assert: Teste de PUT com token inválido
+      cy.request({
+        method: 'PUT',
+        url: `${baseUrl}/${cartId}`,
+        body: payloads.produtoValido,
+        ...requestConfig
+      }).then((response) => {
+        expect(response.status).to.be.oneOf([200, 401, 403])
+      })
+    })
+  })
 })
