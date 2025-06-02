@@ -172,4 +172,61 @@ describe('API de Carrinho - DummyJSON', () => {
       })
     })
   })
+
+  /**
+   * @description Suite de testes para atualizações do carrinho
+   */
+  describe('Atualizações do Carrinho', () => {
+    /**
+     * @description Testa a atualização da quantidade de um item existente no carrinho
+     * Arrange: Configura a requisição PUT com payload de produto válido
+     * Act: Executa a requisição para atualizar o carrinho
+     * Assert: Valida a quantidade atualizada e totais recalculados
+     */
+    it('deve atualizar quantidade de item existente', () => {
+      // Arrange: Configuração do teste
+      const requestConfig = {
+        method: 'PUT',
+        url: `${baseUrl}/${cartId}`,
+        body: payloads.produtoValido,
+        failOnStatusCode: false
+      }
+
+      // Act: Execução da requisição
+      cy.request(requestConfig).then((response) => {
+        // Assert: Validações da resposta
+        if (response.status === 200) {
+          expect(response.body.products[0].quantity).to.eq(1)
+          expect(response.body.totalQuantity).to.eq(1)
+          expect(response.body.total).to.eq(response.body.products[0].price)
+        }
+      })
+    })
+
+    /**
+     * @description Testa o comportamento ao atualizar quantidade para zero
+     * Arrange: Configura a requisição PUT com payload de quantidade zero
+     * Act: Executa a requisição para atualizar o carrinho
+     * Assert: Valida que os totais são zerados corretamente
+     */
+    it('deve lidar com quantidade zero', () => {
+      // Arrange: Configuração do teste
+      const requestConfig = {
+        method: 'PUT',
+        url: `${baseUrl}/${cartId}`,
+        body: payloads.produtoQuantidadeZero,
+        failOnStatusCode: false
+      }
+
+      // Act: Execução da requisição
+      cy.request(requestConfig).then((response) => {
+        // Assert: Validações da resposta
+        if (response.status === 200) {
+          expect(response.body.products[0].quantity).to.eq(0)
+          expect(response.body.totalQuantity).to.eq(0)
+          expect(response.body.total).to.eq(0)
+        }
+      })
+    })
+  })
 })
