@@ -229,4 +229,75 @@ describe('API de Carrinho - DummyJSON', () => {
       })
     })
   })
+
+  /**
+   * @description Suite de testes para validações de dados do carrinho
+   */
+  describe('Validações de Dados', () => {
+    /**
+     * @description Testa a rejeição de quantidade negativa
+     * Arrange: Configura a requisição PUT com payload de quantidade negativa
+     * Act: Executa a requisição para atualizar o carrinho
+     * Assert: Valida que a API retorna erro de validação
+     */
+    it('deve rejeitar quantidade negativa', () => {
+      // Arrange: Configuração do teste
+      const requestConfig = {
+        method: 'PUT',
+        url: `${baseUrl}/${cartId}`,
+        body: payloads.produtoQuantidadeNegativa,
+        failOnStatusCode: false
+      }
+
+      // Act: Execução da requisição
+      cy.request(requestConfig).then((response) => {
+        // Assert: Validação do status de erro
+        expect(response.status).to.be.oneOf([400, 422])
+      })
+    })
+
+    /**
+     * @description Testa a rejeição de quantidade não numérica
+     * Arrange: Configura a requisição PUT com payload de quantidade string
+     * Act: Executa a requisição para atualizar o carrinho
+     * Assert: Valida que a API retorna erro de validação
+     */
+    it('deve rejeitar quantidade não numérica', () => {
+      // Arrange: Configuração do teste
+      const requestConfig = {
+        method: 'PUT',
+        url: `${baseUrl}/${cartId}`,
+        body: payloads.produtoQuantidadeString,
+        failOnStatusCode: false
+      }
+
+      // Act: Execução da requisição
+      cy.request(requestConfig).then((response) => {
+        // Assert: Validação do status de erro
+        expect(response.status).to.be.oneOf([400, 422])
+      })
+    })
+
+    /**
+     * @description Testa a rejeição de ID de produto inválido
+     * Arrange: Configura a requisição PUT com payload de ID inválido
+     * Act: Executa a requisição para atualizar o carrinho
+     * Assert: Valida que a API retorna erro de validação
+     */
+    it('deve rejeitar ID de produto inválido', () => {
+      // Arrange: Configuração do teste
+      const requestConfig = {
+        method: 'PUT',
+        url: `${baseUrl}/${cartId}`,
+        body: payloads.produtoIdInvalido,
+        failOnStatusCode: false
+      }
+
+      // Act: Execução da requisição
+      cy.request(requestConfig).then((response) => {
+        // Assert: Validação do status de erro
+        expect(response.status).to.be.oneOf([400, 422])
+      })
+    })
+  })
 })
