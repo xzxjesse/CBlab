@@ -300,4 +300,80 @@ describe('API de Carrinho - DummyJSON', () => {
       })
     })
   })
+
+  /**
+   * @description Suite de testes para tratamento de erros do carrinho
+   */
+  describe('Tratamento de Erros', () => {
+    /**
+     * @description Testa o comportamento ao acessar carrinho inexistente
+     * Arrange: Configura a requisição GET para um ID de carrinho inexistente
+     * Act: Executa a requisição para obter dados do carrinho
+     * Assert: Valida que a API retorna erro apropriado
+     */
+    it('deve lidar com carrinho inexistente', () => {
+      // Arrange: Configuração do teste
+      const requestConfig = {
+        method: 'GET',
+        url: `${baseUrl}/999999`,
+        failOnStatusCode: false
+      }
+
+      // Act: Execução da requisição
+      cy.request(requestConfig).then((response) => {
+        // Assert: Validação do status de erro
+        expect(response.status).to.be.oneOf([404, 400])
+      })
+    })
+
+    /**
+     * @description Testa o comportamento ao enviar payload inválido
+     * Arrange: Configura a requisição PUT com payload inválido
+     * Act: Executa a requisição para atualizar o carrinho
+     * Assert: Valida o comportamento da API com payload inválido
+     */
+    it('deve lidar com payload inválido', () => {
+      // Arrange: Configuração do teste
+      const requestConfig = {
+        method: 'PUT',
+        url: `${baseUrl}/${cartId}`,
+        body: payloads.payloadInvalido,
+        failOnStatusCode: false
+      }
+
+      // Act: Execução da requisição
+      cy.request(requestConfig).then((response) => {
+        // Assert: Validação do comportamento
+        expect(response.status).to.be.oneOf([200, 400, 422])
+        if (response.status === 200) {
+          cy.log('API aceitou o payload inválido')
+        }
+      })
+    })
+
+    /**
+     * @description Testa o comportamento ao enviar payload vazio
+     * Arrange: Configura a requisição PUT com payload vazio
+     * Act: Executa a requisição para atualizar o carrinho
+     * Assert: Valida o comportamento da API com payload vazio
+     */
+    it('deve lidar com payload vazio', () => {
+      // Arrange: Configuração do teste
+      const requestConfig = {
+        method: 'PUT',
+        url: `${baseUrl}/${cartId}`,
+        body: payloads.payloadVazio,
+        failOnStatusCode: false
+      }
+
+      // Act: Execução da requisição
+      cy.request(requestConfig).then((response) => {
+        // Assert: Validação do comportamento
+        expect(response.status).to.be.oneOf([200, 400, 422])
+        if (response.status === 200) {
+          cy.log('API aceitou payload vazio')
+        }
+      })
+    })
+  })
 })
