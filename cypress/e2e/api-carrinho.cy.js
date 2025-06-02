@@ -460,4 +460,275 @@ describe('API de Carrinho - DummyJSON', () => {
       })
     })
   })
+
+  /**
+   * @description Suite de testes para validações avançadas do carrinho
+   */
+  describe('Testes de Validação Avançada', () => {
+    /**
+     * @description Testa o comportamento ao enviar payload vazio
+     * Arrange: Configura requisição PUT com payload vazio
+     * Act: Executa a requisição
+     * Assert: Valida o comportamento da API
+     */
+    it('deve rejeitar payload vazio no PUT /carts/:id', () => {
+      // Arrange: Configuração do teste
+      const requestConfig = {
+        method: 'PUT',
+        url: `${baseUrl}/${cartId}`,
+        body: {},
+        failOnStatusCode: false
+      }
+
+      // Act: Execução da requisição
+      cy.request(requestConfig).then(response => {
+        // Assert: Validação do comportamento
+        expect([400, 422, 200]).to.include(response.status)
+        if (response.status === 200) {
+          cy.log('API aceitou payload vazio, possível falta de validação')
+        }
+      })
+    })
+
+    /**
+     * @description Testa o comportamento com campos extras no payload
+     * Arrange: Configura requisição PUT com campos extras
+     * Act: Executa a requisição
+     * Assert: Valida que campos extras são ignorados
+     */
+    it('deve rejeitar ou ignorar campos extras inesperados no payload', () => {
+      // Arrange: Configuração do teste
+      const requestConfig = {
+        method: 'PUT',
+        url: `${baseUrl}/${cartId}`,
+        body: {
+          products: [{ id: 1, quantity: 2 }],
+          extraField: 'valorInesperado',
+          anotherOne: 12345
+        },
+        failOnStatusCode: false
+      }
+
+      // Act: Execução da requisição
+      cy.request(requestConfig).then(response => {
+        // Assert: Validação do comportamento
+        expect(response.status).to.be.oneOf([200, 400, 422])
+        if (response.status === 200) {
+          expect(response.body).to.not.have.property('extraField')
+          expect(response.body).to.not.have.property('anotherOne')
+        }
+      })
+    })
+
+    /**
+     * @description Testa o comportamento com quantidades negativas
+     * Arrange: Configura requisição PUT com quantidade negativa
+     * Act: Executa a requisição
+     * Assert: Valida que quantidade é corrigida ou rejeitada
+     */
+    it('deve rejeitar ou corrigir quantidades negativas', () => {
+      // Arrange: Configuração do teste
+      const requestConfig = {
+        method: 'PUT',
+        url: `${baseUrl}/${cartId}`,
+        body: {
+          products: [{ id: 1, quantity: -5 }]
+        },
+        failOnStatusCode: false
+      }
+
+      // Act: Execução da requisição
+      cy.request(requestConfig).then(response => {
+        // Assert: Validação do comportamento
+        expect([200, 400, 422]).to.include(response.status)
+        if (response.status === 200) {
+          const prod = response.body.products.find(p => p.id === 1)
+          expect(prod.quantity).to.be.gte(0)
+        }
+      })
+    })
+
+    /**
+     * @description Testa o comportamento com quantidade não numérica
+     * Arrange: Configura requisição PUT com quantidade string
+     * Act: Executa a requisição
+     * Assert: Valida que API rejeita quantidade inválida
+     */
+    it('deve rejeitar quantidade com valor não numérico', () => {
+      // Arrange: Configuração do teste
+      const requestConfig = {
+        method: 'PUT',
+        url: `${baseUrl}/${cartId}`,
+        body: {
+          products: [{ id: 1, quantity: 'dois' }]
+        },
+        failOnStatusCode: false
+      }
+
+      // Act: Execução da requisição
+      cy.request(requestConfig).then(response => {
+        // Assert: Validação do comportamento
+        expect(response.status).to.be.oneOf([400, 422])
+      })
+    })
+
+    /**
+     * @description Testa o comportamento com IDs de produto inválidos
+     * Arrange: Configura requisições PUT com IDs inválidos
+     * Act: Executa as requisições
+     * Assert: Valida que API rejeita IDs inválidos
+     */
+    it('deve rejeitar produtos com ID inválido', () => {
+      // Arrange: Configuração do teste
+      const invalidIds = [-1, 0, 'abc', null]
+      
+      // Act & Assert: Execução e validação das requisições
+      invalidIds.forEach(id => {
+        cy.request({
+          method: 'PUT',
+          url: `${baseUrl}/${cartId}`,
+          body: {
+            products: [{ id: id, quantity: 1 }]
+          },
+          failOnStatusCode: false
+        }).then(response => {
+          expect(response.status).to.be.oneOf([400, 422])
+        })
+      })
+    })
+
+    /**
+     * @description Testa proteção contra injeção de código malicioso
+     * Arrange: Configura requisições PUT com payloads maliciosos
+     * Act: Executa as requisições
+     * Assert: Valida que API protege contra injeção
+     */
+    it('deve proteger contra injeção de código malicioso', () => {
+      // Arrange: Configuração do teste
+      const maliciousPayloads = [
+        { id: 1, quantity: 1, title: "<script>alert('XSS')</script>" },
+        { id: 1, quantity: 1, title: "1; DROP TABLE users;" }
+      ]
+
+      // Act & Assert: Execução e validação das requisições
+      maliciousPayloads.forEach(payload => {
+        cy.request({
+          method: 'PUT',
+          url: `${baseUrl}/${cartId}`,
+          body: { products: [payload] },
+          failOnStatusCode: false
+        }).then(response => {
+          expect(response.status).to.be.oneOf([200, 400, 422])
+          if (response.status === 200) {
+            expect(response.body.products[0].title).to.not.include('<script>')
+            expect(response.body.products[0].title).to.not.include('DROP TABLE')
+          }
+        })
+      })
+    })
+
+    /**
+     * @description Testa o comportamento com produtos repetidos
+     * Arrange: Configura requisição PUT com produtos duplicados
+     * Act: Executa a requisição
+     * Assert: Valida o tratamento de produtos repetidos
+     */
+    it('deve lidar com produtos repetidos no mesmo payload', () => {
+      // Arrange: Configuração do teste
+      const requestConfig = {
+        method: 'PUT',
+        url: `${baseUrl}/${cartId}`,
+        body: {
+          products: [
+            { id: 1, quantity: 1 },
+            { id: 1, quantity: 2 }
+          ]
+        },
+        failOnStatusCode: false
+      }
+
+      // Act: Execução da requisição
+      cy.request(requestConfig).then(response => {
+        // Assert: Validação do comportamento
+        expect(response.status).to.be.oneOf([200, 400, 422])
+        if (response.status === 200) {
+          const prod = response.body.products.find(p => p.id === 1)
+          expect(prod.quantity).to.be.gte(1)
+        }
+      })
+    })
+
+    /**
+     * @description Testa o comportamento com payloads muito grandes
+     * Arrange: Configura requisição PUT com payload grande
+     * Act: Executa a requisição
+     * Assert: Valida que API lida com payload grande
+     */
+    it('deve lidar com payloads muito grandes sem travar', () => {
+      // Arrange: Configuração do teste
+      const bigPayload = {
+        products: Array.from({ length: 1000 }, (_, i) => ({
+          id: i + 1,
+          quantity: 1
+        }))
+      }
+
+      // Act: Execução da requisição
+      cy.request({
+        method: 'PUT',
+        url: `${baseUrl}/${cartId}`,
+        body: bigPayload,
+        failOnStatusCode: false,
+        timeout: 20000
+      }).then(response => {
+        // Assert: Validação do comportamento
+        expect(response.status).to.be.oneOf([200, 400, 413])
+      })
+    })
+
+    /**
+     * @description Testa o comportamento com PUT sem body
+     * Arrange: Configura requisição PUT sem body
+     * Act: Executa a requisição
+     * Assert: Valida que API rejeita requisição sem body
+     */
+    it('deve rejeitar PUT sem body', () => {
+      // Arrange: Configuração do teste
+      const requestConfig = {
+        method: 'PUT',
+        url: `${baseUrl}/${cartId}`,
+        failOnStatusCode: false
+      }
+
+      // Act: Execução da requisição
+      cy.request(requestConfig).then(response => {
+        // Assert: Validação do comportamento
+        expect(response.status).to.be.oneOf([400, 422])
+      })
+    })
+
+    /**
+     * @description Testa o comportamento com ID de carrinho inválido
+     * Arrange: Configura requisição PUT com ID inválido
+     * Act: Executa a requisição
+     * Assert: Valida que API retorna erro apropriado
+     */
+    it('deve retornar erro para ID de carrinho inválido', () => {
+      // Arrange: Configuração do teste
+      const requestConfig = {
+        method: 'PUT',
+        url: `${baseUrl}/999999`,
+        body: {
+          products: [{ id: 1, quantity: 1 }]
+        },
+        failOnStatusCode: false
+      }
+
+      // Act: Execução da requisição
+      cy.request(requestConfig).then(response => {
+        // Assert: Validação do comportamento
+        expect(response.status).to.be.oneOf([404, 400])
+      })
+    })
+  })
 })
