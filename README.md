@@ -66,56 +66,12 @@ npx cypress open
 
 Os fluxos críticos do sistema estão documentados em [`docs/FluxosCriticos.md`](docs/FluxosCriticos.md).
 
-## Testes Implementados
-
-### Fluxo de Endereço (Coco Bambu)
-- **Fluxo Principal**
-  - Inserção de endereço válido
-  - Validação de endereço inválido
-  - Uso de localização atual
-  - Navegação entre telas
-
-- **Validações**
-  - Endereços inválidos
-  - Endereços curtos
-  - Caracteres especiais
-  - Timeout de requisições
-
-- **Usabilidade**
-  - Campos visíveis e habilitados
-  - Feedback visual de erros
-  - Navegação intuitiva
-  - Tratamento de geolocalização
-
-### API de Carrinho (DummyJSON)
-- **Operações Básicas**
-  - Obtenção de dados do carrinho
-  - Validação da estrutura de produtos
-  - Atualização de quantidade de itens
-  - Tratamento de quantidade zero
-
-- **Validações de Dados**
-  - Rejeição de quantidade negativa
-  - Rejeição de quantidade não numérica
-  - Validação de IDs de produto
-  - Tratamento de payloads inválidos
-
-- **Tratamento de Erros**
-  - Carrinho inexistente
-  - Payload inválido
-  - Payload vazio
-  - IDs inválidos
-
-- **Performance e Segurança**
-  - Requisições simultâneas
-  - Validação de autenticação
-  - Proteção contra injeção de código
-  - Tratamento de payloads grandes
-
 ## Relatórios
 
 Os relatórios de execução dos testes estão disponíveis em:
-- Testes de API: [`docs/RelatorioAPI.md`](docs/RelatorioAPI.md)
+- Testes de API: 
+   - [`cypress/e2e/api/*.cy.js`](cypress/e2e/api/) 
+   - [`docs/RelatorioAPI.md`](docs/RelatorioAPI.md)
 - Testes de UI: [`docs/RelatorioUI.md`](docs/RelatorioUI.md)
 
 ## CI/CD
