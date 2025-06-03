@@ -17,6 +17,9 @@ describe('API de Carrinho - DummyJSON', () => {
    * @property {Object} produtoIdInvalido - Payload com ID de produto inválido
    * @property {Object} payloadVazio - Payload vazio
    * @property {Object} payloadInvalido - Payload com estrutura inválida
+   * @property {Object} carrinhoValido - Payload com produtos válidos
+   * @property {Object} carrinhoMultiplosProdutos - Payload com múltiplos produtos
+   * @property {Object} carrinhoComDesconto - Payload com produtos com desconto
    */
   const payloads = {
     produtoValido: {
@@ -35,7 +38,27 @@ describe('API de Carrinho - DummyJSON', () => {
       products: [{ id: -1, quantity: 1 }]
     },
     payloadVazio: {},
-    payloadInvalido: { invalid: 'payload' }
+    payloadInvalido: { invalid: 'payload' },
+    carrinhoValido: {
+      userId: 1,
+      products: [
+        { id: 1, quantity: 1 }
+      ]
+    },
+    carrinhoMultiplosProdutos: {
+      userId: 1,
+      products: [
+        { id: 1, quantity: 2 },
+        { id: 2, quantity: 3 },
+        { id: 3, quantity: 1 }
+      ]
+    },
+    carrinhoComDesconto: {
+      userId: 1,
+      products: [
+        { id: 1, quantity: 1, discountPercentage: 10 }
+      ]
+    }
   }
 
   /**
@@ -728,6 +751,95 @@ describe('API de Carrinho - DummyJSON', () => {
       cy.request(requestConfig).then(response => {
         // Assert: Validação do comportamento
         expect(response.status).to.be.oneOf([404, 400])
+      })
+    })
+  })
+
+  /**
+   * @description Suite de testes para criação de carrinho 
+   */
+  describe('Criação de Carrinho (POST)', () => {
+    /**
+     * @description Testa a criação de um novo carrinho com produto válido
+     * Arrange: Configura a requisição POST com payload válido
+     * Act: Executa a requisição para criar o carrinho
+     * Assert: Valida a estrutura e dados do carrinho criado
+     */
+    it('deve criar um novo carrinho com produto válido', () => {
+      // Arrange: Configuração do teste
+      const requestConfig = {
+        method: 'POST',
+        url: baseUrl,
+        body: payloads.carrinhoValido,
+        failOnStatusCode: false
+      }
+
+      // Act: Execução da requisição
+      cy.request(requestConfig).then((response) => {
+        // Assert: Validações da resposta
+        expect(response.status).to.eq(200)
+        expect(response.body).to.have.all.keys([
+          'id',
+          'products',
+          'total',
+          'discountedTotal',
+          'userId',
+          'totalProducts',
+          'totalQuantity'
+        ])
+        expect(response.body.products).to.have.length(1)
+        expect(response.body.totalProducts).to.eq(1)
+        expect(response.body.totalQuantity).to.eq(1)
+      })
+    })
+
+    /**
+     * @description Testa a criação de carrinho com múltiplos produtos
+     * Arrange: Configura a requisição POST com múltiplos produtos
+     * Act: Executa a requisição para criar o carrinho
+     * Assert: Valida os totais e quantidades
+     */
+    it('deve criar carrinho com múltiplos produtos', () => {
+      // Arrange: Configuração do teste
+      const requestConfig = {
+        method: 'POST',
+        url: baseUrl,
+        body: payloads.carrinhoMultiplosProdutos,
+        failOnStatusCode: false
+      }
+
+      // Act: Execução da requisição
+      cy.request(requestConfig).then((response) => {
+        // Assert: Validações da resposta
+        expect(response.status).to.eq(200)
+        expect(response.body.products).to.have.length(3)
+        expect(response.body.totalProducts).to.eq(3)
+        expect(response.body.totalQuantity).to.eq(6)
+        expect(response.body.total).to.be.gt(0)
+      })
+    })
+
+    /**
+     * @description Testa a criação de carrinho com desconto
+     * Arrange: Configura a requisição POST com produto com desconto
+     * Act: Executa a requisição para criar o carrinho
+     * Assert: Valida o cálculo do desconto
+     */
+    it('deve aplicar desconto corretamente', () => {
+      // Arrange: Configuração do teste
+      const requestConfig = {
+        method: 'POST',
+        url: baseUrl,
+        body: payloads.carrinhoComDesconto,
+        failOnStatusCode: false
+      }
+
+      // Act: Execução da requisição
+      cy.request(requestConfig).then((response) => {
+        // Assert: Validações da resposta
+        expect(response.status).to.eq(200)
+        expect(response.body.discountedTotal).to.be.lt(response.body.total)
+        expect(response.body.products[0].discountPercentage).to.eq(10)
       })
     })
   })
