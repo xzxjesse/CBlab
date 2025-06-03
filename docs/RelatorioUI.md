@@ -14,8 +14,6 @@
 | **Usabilidade**          | Deve ter espaçamento adequado entre elementos                              | Passed  |
 |                          | Deve ter feedback visual nos estados de foco                               | Passed  |
 
----
-
 ## ❌ Testes que Falharam
 
 | Categoria         | Teste                                              | Erro Identificado                                                                                      | Causa Provável                          |
@@ -25,8 +23,6 @@
 |                   | Textos alternativos em imagens                    | Imagens (`<img>`) não possuem atributo `alt` ou estão com alt vazio                                    | Falta de descrição nas imagens           |
 |                   | Links com textos descritivos                      | Nenhum elemento `<a>` foi encontrado ou está vazio (ex: "clique aqui")                                 | Links não renderizados ou seletor incorreto |
 |                   | Contraste adequado nos textos                     | Falha ao comparar cor de texto e fundo (`rgb(51, 51, 51)`) – asserção feita sobre valor incorreto       | Erro na cadeia de `.should()` ou uso indevido de `.and()` |
-
----
 
 ## Considerações Finais
 
@@ -41,5 +37,4 @@
 
 ---
 
-🗂 Arquivo de origem: `cypress/e2e/fluxo-endereco.cy.js`  
-
+🗂 Arquivo de origem: [`cypress/e2e/fluxo-endereco.cy.js`](./cypress/e2e/fluxo-endereco.cy.js) 

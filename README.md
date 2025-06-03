@@ -1,150 +1,125 @@
-# Projeto de Testes Automatizados com Cypress
+# Projeto de Testes Automatizados
 
 Este projeto contém testes automatizados utilizando Cypress para validar o fluxo de definição e validação de endereço, garantindo qualidade e confiabilidade no sistema.
-
----
-
-## Índice
-
-* [Repositório](#repositório)
-* [Pré-requisitos](#pré-requisitos)
-* [Configuração do Ambiente](#configuração-do-ambiente)
-* [Execução dos Testes](#execução-dos-testes)
-  * [Modo Headless](#rodar-todos-os-testes-em-modo-headless-sem-interface-gráfica)
-  * [Interface Gráfica](#abrir-o-cypress-test-runner-interface-gráfica)
-  * [Resultados e Relatórios](#resultados-e-relatórios)
-* [Estrutura do Projeto](#estrutura-do-projeto)
-* [Entregáveis](#entregáveis)
-   * [Análise de Fluxos Críticos](./docs/FluxosCriticos.md)
-   * [Relatório de Testes UI - Fluxo de Endereço](docs/RelatorioUI.md)
-* [Contribuição](#contribuição)
-* [Licença](#licença)
-
----
-
-## Repositório
-
-Clone o projeto a partir do seguinte link:
-[https://github.com/xzxjesse/CBlab.git](https://github.com/xzxjesse/CBlab.git)
-
----
-
-## Pré-requisitos
-
-Antes de iniciar, certifique-se de ter instalado em sua máquina:
-
-* **Node.js** (versão 16.x ou superior)
-  [Download Node.js](https://nodejs.org/)
-* **npm** (vem junto com Node.js) ou **Yarn** (opcional)
-  Para instalar o Yarn:
-
-  ```bash
-  npm install -g yarn
-  ```
-
----
-
-## Configuração do Ambiente
-
-1. **Clonar o repositório:**
-
-   ```bash
-   git clone https://github.com/xzxjesse/CBlab.git
-   cd CBlab
-   ```
-
-2. **Instalar dependências:**
-   Utilize npm ou yarn para instalar as dependências do projeto:
-
-   ```bash
-   npm install
-   # ou
-   yarn install
-   ```
-
-3. **Configurar variáveis de ambiente (se houver):**
-   Caso o projeto utilize variáveis de ambiente, crie um arquivo `.env` na raiz e configure conforme o modelo `.env.example` (se disponível).
-
----
-
-## Execução dos Testes
-
-### Rodar todos os testes em modo headless (sem interface gráfica)
-
-```bash
-npx cypress run
-```
-
----
-
-### Abrir o Cypress Test Runner (interface gráfica)
-
-```bash
-npx cypress open
-```
-
----
-
-### Resultados e Relatórios
-
-* Relatórios de teste podem ser encontrados em `cypress/results` (dependendo da configuração).
-
----
 
 ## Estrutura do Projeto
 
 ```
 .
 ├── cypress/
-│   ├── e2e/
-│   ├── support/
-│   └── results/
-.
-├── cypress/
-│   ├── e2e/
-│   ├── support/
-│   └── results/
+│   ├── e2e/              
+│   │   ├── api-carrinho.cy.js  
+│   │   └── fluxo-endereco.cy.js      
+│   ├── support/        
+│   └── results/        
 ├── docs/
-│   ├── FluxosCticos.md
-│   └── RelatorioUI.md
+│   ├── FluxosCticos.md   
+│   ├── RelatorioAPI.md  
+│   └── RelatorioUI.md  
 ├── .github/
-│   └── workflows/
-├── .gitignore
-└── README.md
-├── .github/
-│   └── workflows/
+│   └── workflows/       
 ├── .gitignore
 └── README.md
 ```
----
 
-## Entregáveis
+## Executando os Testes
 
-Os entregáveis do projeto, incluindo a análise de fluxos críticos e documentação dos testes, estão disponíveis na pasta `docs/`:
+### Pré-requisitos
+- Node.js (versão 18 ou superior)
+- npm ou yarn
 
-- [Análise de Fluxos Críticos](./docs/FluxosCriticos.md)
-- [Relatório de Testes UI - Fluxo de Endereço](docs/RelatorioUI.md)
+### Instalação
+```bash
+npm install
+# ou
+yarn install
+```
 
----
+### Executando os Testes
+```bash
+# Executar todos os testes em modo headless
+npx cypress run
 
-## Contribuição
+# Executar todos os testes com interface gráfica
+npx cypress open
 
-1. Faça um fork do projeto.
-2. Crie uma branch:
+# Executar testes específicos
+npx cypress run --spec "cypress/e2e/api-carrinho.cy.js"  # Apenas testes de API
+npx cypress run --spec "cypress/e2e/fluxo-endereco.cy.js"  # Apenas testes de UI
 
-   ```bash
-   git checkout -b feature/nova-feature
-   ```
-3. Commit suas mudanças.
-4. Push para a branch:
+# Abrir Cypress Test Runner (interface gráfica)
+npx cypress open
+```
 
-   ```bash
-   git push origin feature/nova-feature
-   ```
-5. Abra um Pull Request.
+## Padrões de Commit
 
----
+- `feat`: Nova feature
+- `fix`: Correção de bug
+- `test`: Adição ou modificação de testes
+- `docs`: Documentação
+- `refactor`: Refatoração de código
+- `chore`: Atualização de dependências ou configurações
 
-## Licença
+# Entregáveis:
 
-Licenciado sob a licença **MIT**.
+## Fluxos Críticos
+
+Os fluxos críticos do sistema estão documentados em [`docs/FluxosCticos.md`](docs/FluxosCticos.md).
+
+## Testes Implementados
+
+### Fluxo de Endereço (Coco Bambu)
+- **Fluxo Principal**
+  - Inserção de endereço válido
+  - Validação de endereço inválido
+  - Uso de localização atual
+  - Navegação entre telas
+
+- **Validações**
+  - Endereços inválidos
+  - Endereços curtos
+  - Caracteres especiais
+  - Timeout de requisições
+
+- **Usabilidade**
+  - Campos visíveis e habilitados
+  - Feedback visual de erros
+  - Navegação intuitiva
+  - Tratamento de geolocalização
+
+### API de Carrinho (DummyJSON)
+- **Operações Básicas**
+  - Obtenção de dados do carrinho
+  - Validação da estrutura de produtos
+  - Atualização de quantidade de itens
+  - Tratamento de quantidade zero
+
+- **Validações de Dados**
+  - Rejeição de quantidade negativa
+  - Rejeição de quantidade não numérica
+  - Validação de IDs de produto
+  - Tratamento de payloads inválidos
+
+- **Tratamento de Erros**
+  - Carrinho inexistente
+  - Payload inválido
+  - Payload vazio
+  - IDs inválidos
+
+- **Performance e Segurança**
+  - Requisições simultâneas
+  - Validação de autenticação
+  - Proteção contra injeção de código
+  - Tratamento de payloads grandes
+
+## Relatórios
+
+Os relatórios de execução dos testes estão disponíveis em:
+- Testes de API: [`docs/RelatorioAPI.md`](docs/RelatorioAPI.md)
+- Testes de UI: [`docs/RelatorioUI.md`](docs/RelatorioUI.md)
+
+## CI/CD
+
+O projeto utiliza GitHub Actions para automação de testes e deploy. As configurações estão disponíveis em:
+- Workflow de Testes: [`.github/workflows/test.yml`](.github/workflows/test.yml)
+- Workflow de Deploy: [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)
