@@ -37,4 +37,4 @@
 
 ---
 
-🗂 Arquivo de origem: [`cypress/e2e/fluxo-endereco.cy.js`](./cypress/e2e/fluxo-endereco.cy.js) 
+🗂 Arquivo de origem: [`cypress/e2e/fluxo-endereco.cy.js`](https://github.com/xzxjesse/CBlab/blob/main/cypress/e2e/fluxo-endereco.cy.js) 

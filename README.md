@@ -64,7 +64,7 @@ npx cypress open
 
 ## Fluxos Críticos
 
-Os fluxos críticos do sistema estão documentados em [`docs/FluxosCticos.md`](docs/FluxosCticos.md).
+Os fluxos críticos do sistema estão documentados em [`docs/FluxosCriticos.md`](docs/FluxosCriticos.md).
 
 ## Testes Implementados
 
@@ -121,5 +121,4 @@ Os relatórios de execução dos testes estão disponíveis em:
 ## CI/CD
 
 O projeto utiliza GitHub Actions para automação de testes e deploy. As configurações estão disponíveis em:
-- Workflow de Testes: [`.github/workflows/test.yml`](.github/workflows/test.yml)
-- Workflow de Deploy: [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)
+- Workflow de Deploy: [`.github/workflows/cypress.yml`](.github/workflows/cypress.yml)

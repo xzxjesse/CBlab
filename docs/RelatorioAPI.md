@@ -59,4 +59,4 @@
 
 ---
 
-🗂 Arquivo de origem: [`cypress/e2e/api-carrinho.cy.js`](./cypress/e2e/api-carrinho.cy.js) 
+🗂 Arquivo de origem: [`cypress/e2e/api-carrinho.cy.js`](https://github.com/xzxjesse/CBlab/blob/main/cypress/e2e/api-carrinho.cy.js) 
