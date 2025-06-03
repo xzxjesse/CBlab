@@ -1,40 +1,49 @@
 # Relatório de Testes – Fluxo de Endereço (Coco Bambu Delivery)
 
-## ✅ Testes que Passaram
+## ✅ Testes que Passaram (12)
 
 | Categoria                | Teste                                                                      | Status  |
 |--------------------------|-----------------------------------------------------------------------------|---------|
 | **Fluxo Principal**      | Deve permitir inserir endereço válido e avançar no fluxo                   | Passed  |
 |                          | Deve mostrar erro ao inserir endereço inválido                             | Passed  |
 |                          | Deve permitir usar localização atual e avançar                             | Passed  |
-| **Manipulação do Campo** | Deve permitir limpar o campo de endereço                                   | Passed  |
-|                          | Deve lidar com entradas curtas sem avançar                                 | Passed  |
+| **Manipulação do Campo** | Deve lidar com entradas curtas sem avançar                                 | Passed  |
 |                          | Deve aceitar caracteres especiais no endereço                              | Passed  |
-| **Acessibilidade**       | Deve ter tamanhos de fonte legíveis                                        | Passed  |
-| **Usabilidade**          | Deve ter espaçamento adequado entre elementos                              | Passed  |
+|                          | Deve permitir limpar o campo de endereço                                   | Passed  |
+| **Usabilidade**          | Deve ter tamanhos de fonte legíveis                                        | Passed  |
+|                          | Deve ter espaçamento adequado entre elementos                              | Passed  |
 |                          | Deve ter feedback visual nos estados de foco                               | Passed  |
+|                          | Deve ter estrutura responsiva                                              | Passed  |
+| **Acessibilidade**       | Deve ter estrutura HTML semântica adequada                                 | Passed  |
+|                          | Deve ter contraste adequado nos textos                                     | Passed  |
 
-## ❌ Testes que Falharam
+## ❌ Testes que Falharam (4)
 
 | Categoria         | Teste                                              | Erro Identificado                                                                                      | Causa Provável                          |
 |-------------------|----------------------------------------------------|----------------------------------------------------------------------------------------------------------|------------------------------------------|
-| **Acessibilidade**| Estrutura HTML semântica adequada                  | Elemento `<main>` não possui atributo `role="main"`                                                     | Falta de roles ARIA                      |
-|                   | Atributos ARIA nos elementos interativos          | `<input.search-address-input>` não possui `aria-label` ou `role="textbox"`                             | Ausência de atributos ARIA no input      |
-|                   | Textos alternativos em imagens                    | Imagens (`<img>`) não possuem atributo `alt` ou estão com alt vazio                                    | Falta de descrição nas imagens           |
-|                   | Links com textos descritivos                      | Nenhum elemento `<a>` foi encontrado ou está vazio (ex: "clique aqui")                                 | Links não renderizados ou seletor incorreto |
-|                   | Contraste adequado nos textos                     | Falha ao comparar cor de texto e fundo (`rgb(51, 51, 51)`) – asserção feita sobre valor incorreto       | Erro na cadeia de `.should()` ou uso indevido de `.and()` |
+| **Validação**     | Campo de busca de endereço                         | `cy.clear()` falhou porque requer um elemento DOM                                                       | Seletor incorreto ou elemento não encontrado |
+| **Acessibilidade**| Atributos ARIA nos elementos interativos          | Nenhum elemento `button` foi encontrado                                                                 | Botões não renderizados ou seletor incorreto |
+|                   | Textos alternativos em imagens                    | Imagens (`<img>`) não possuem atributo `alt`                                                           | Falta de descrição nas imagens           |
+|                   | Links com textos descritivos                      | Nenhum elemento `<a>` ou `[role="link"]` foi encontrado                                                | Links não renderizados ou seletor incorreto |
 
 ## Considerações Finais
 
-- A **funcionalidade principal** do fluxo de endereço está funcionando corretamente.
-- As **falhas estão concentradas em requisitos de acessibilidade**, que são fundamentais para garantir usabilidade inclusiva.
-- Recomenda-se ajustes nos seguintes pontos:
-  - Adicionar atributos ARIA aos elementos relevantes.
-  - Garantir que todas as imagens tenham `alt`.
-  - Verificar se links estão sendo carregados corretamente.
-  - Revisar a verificação de contraste com ferramentas específicas (ex: Lighthouse, axe-core).
-  - Inserir `role="main"` no elemento `<main>`.
+* O **fluxo de endereço funciona** como esperado.
+* As **principais falhas** envolvem:
+
+  * Problemas no **seletor do campo de busca**
+  * **Falhas de acessibilidade** (estrutura e atributos)
+
+### Recomendações
+
+   * Corrigir seletor de busca e renderização de botões/links
+   * Adicionar `alt` em imagens
+   * Incluir atributos ARIA e roles
+   * Garantir textos descritivos e estrutura semântica correta
+   * Tratar elementos não encontrados
+   * Ajustar timeouts
+   * Tornar seletores mais robustos
 
 ---
 
-🗂 Arquivo de origem: [`cypress/e2e/fluxo-endereco.cy.js`](https://github.com/xzxjesse/CBlab/blob/main/cypress/e2e/fluxo-endereco.cy.js) 
+🗂 Arquivo de origem: [`cypress/e2e/ui/*.cy.js`](https://github.com/xzxjesse/CBlab/blob/main/cypress/e2e/ui/) 

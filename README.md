@@ -8,8 +8,21 @@ Este projeto contém testes automatizados utilizando Cypress para validar o flux
 .
 ├── cypress/
 │   ├── e2e/              
-│   │   ├── api-carrinho.cy.js  
-│   │   └── fluxo-endereco.cy.js      
+│   │   ├── api/                    # Testes de API
+│   │   │   ├── carrinho.basic.cy.js
+│   │   │   ├── carrinho.validation.cy.js
+│   │   │   ├── carrinho.error.cy.js
+│   │   │   ├── carrinho.performance.cy.js
+│   │   │   ├── carrinho.advanced.cy.js
+│   │   │   ├── carrinho.create.cy.js
+│   │   │   ├── carrinho.delete.cy.js
+│   │   │   └── carrinho.support.js
+│   │   └── ui/                     # Testes de Interface
+│   │       ├── endereco.basic.cy.js
+│   │       ├── endereco.validation.cy.js
+│   │       ├── endereco.usability.cy.js
+│   │       ├── endereco.accessibility.cy.js
+│   │       └── endereco.support.js
 │   ├── support/        
 │   └── results/        
 ├── docs/
@@ -44,8 +57,8 @@ npx cypress run
 npx cypress open
 
 # Executar testes específicos
-npx cypress run --spec "cypress/e2e/api-carrinho.cy.js"  # Apenas testes de API
-npx cypress run --spec "cypress/e2e/fluxo-endereco.cy.js"  # Apenas testes de UI
+npx cypress run --spec "cypress/e2e/api*.cy.js"  # Apenas testes de API
+npx cypress run --spec "cypress/e2e/ui*.cy.js"  # Apenas testes de UI
 
 # Abrir Cypress Test Runner (interface gráfica)
 npx cypress open
@@ -66,57 +79,15 @@ npx cypress open
 
 Os fluxos críticos do sistema estão documentados em [`docs/FluxosCriticos.md`](docs/FluxosCriticos.md).
 
-## Testes Implementados
-
-### Fluxo de Endereço (Coco Bambu)
-- **Fluxo Principal**
-  - Inserção de endereço válido
-  - Validação de endereço inválido
-  - Uso de localização atual
-  - Navegação entre telas
-
-- **Validações**
-  - Endereços inválidos
-  - Endereços curtos
-  - Caracteres especiais
-  - Timeout de requisições
-
-- **Usabilidade**
-  - Campos visíveis e habilitados
-  - Feedback visual de erros
-  - Navegação intuitiva
-  - Tratamento de geolocalização
-
-### API de Carrinho (DummyJSON)
-- **Operações Básicas**
-  - Obtenção de dados do carrinho
-  - Validação da estrutura de produtos
-  - Atualização de quantidade de itens
-  - Tratamento de quantidade zero
-
-- **Validações de Dados**
-  - Rejeição de quantidade negativa
-  - Rejeição de quantidade não numérica
-  - Validação de IDs de produto
-  - Tratamento de payloads inválidos
-
-- **Tratamento de Erros**
-  - Carrinho inexistente
-  - Payload inválido
-  - Payload vazio
-  - IDs inválidos
-
-- **Performance e Segurança**
-  - Requisições simultâneas
-  - Validação de autenticação
-  - Proteção contra injeção de código
-  - Tratamento de payloads grandes
-
 ## Relatórios
 
 Os relatórios de execução dos testes estão disponíveis em:
-- Testes de API: [`docs/RelatorioAPI.md`](docs/RelatorioAPI.md)
-- Testes de UI: [`docs/RelatorioUI.md`](docs/RelatorioUI.md)
+- Testes de API: 
+   - [`cypress/e2e/api/*.cy.js`](cypress/e2e/api/) 
+   - [`docs/RelatorioAPI.md`](docs/RelatorioAPI.md)
+- Testes de UI: 
+   - [`cypress/e2e/ui/*.cy.js`](cypress/e2e/ui/) 
+   - [`docs/RelatorioUI.md`](docs/RelatorioUI.md)
 
 ## CI/CD
 
