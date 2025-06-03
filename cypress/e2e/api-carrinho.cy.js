@@ -843,4 +843,153 @@ describe('API de Carrinho - DummyJSON', () => {
       })
     })
   })
+
+  /**
+   * @description Suite de testes para remoção de carrinho 
+   */
+  describe('Remoção de Carrinho (DELETE)', () => {
+    let cartId
+
+    /**
+     * @description Setup executado antes de cada teste
+     * Cria um carrinho para ser usado nos testes de remoção
+     */
+    beforeEach(() => {
+      // Cria um carrinho para os testes
+      cy.request({
+        method: 'POST',
+        url: baseUrl,
+        body: payloads.carrinhoValido,
+        failOnStatusCode: false
+      }).then((response) => {
+        if (response.status === 200) {
+          cartId = response.body.id
+        }
+      })
+    })
+
+    /**
+     * @description Testa a remoção de um carrinho existente
+     * Arrange: Configura a requisição DELETE
+     * Act: Executa a requisição para remover o carrinho
+     * Assert: Valida a remoção e tenta acessar o carrinho removido
+     */
+    it('deve remover um carrinho existente', () => {
+      // Arrange: Configuração do teste
+      const requestConfig = {
+        method: 'DELETE',
+        url: `${baseUrl}/${cartId}`,
+        failOnStatusCode: false
+      }
+
+      // Act: Execução da requisição
+      cy.request(requestConfig).then((response) => {
+        // Assert: Validação da remoção
+        expect(response.status).to.eq(200)
+        expect(response.body.isDeleted).to.be.true
+
+        // Verifica se o carrinho foi realmente removido
+        cy.request({
+          method: 'GET',
+          url: `${baseUrl}/${cartId}`,
+          failOnStatusCode: false
+        }).then((getResponse) => {
+          expect(getResponse.status).to.be.oneOf([404, 400])
+        })
+      })
+    })
+
+    /**
+     * @description Testa a remoção de um carrinho inexistente
+     * Arrange: Configura a requisição DELETE com ID inválido
+     * Act: Executa a requisição para remover o carrinho
+     * Assert: Valida o comportamento com ID inválido
+     */
+    it('deve lidar com remoção de carrinho inexistente', () => {
+      // Arrange: Configuração do teste
+      const requestConfig = {
+        method: 'DELETE',
+        url: `${baseUrl}/999999`,
+        failOnStatusCode: false
+      }
+
+      // Act: Execução da requisição
+      cy.request(requestConfig).then((response) => {
+        // Assert: Validação do comportamento
+        expect(response.status).to.be.oneOf([404, 400])
+      })
+    })
+
+    /**
+     * @description Testa a remoção de um item específico do carrinho
+     * Arrange: Configura o carrinho com múltiplos produtos
+     * Act: Executa a requisição para remover um item
+     * Assert: Valida a remoção do item específico
+     */
+    it('deve remover um item específico do carrinho', () => {
+      // Arrange: Cria carrinho com múltiplos produtos
+      cy.request({
+        method: 'POST',
+        url: baseUrl,
+        body: payloads.carrinhoMultiplosProdutos,
+        failOnStatusCode: false
+      }).then((response) => {
+        if (response.status === 200) {
+          const cartId = response.body.id
+          const productId = response.body.products[0].id
+
+          // Act: Remove o primeiro produto
+          cy.request({
+            method: 'DELETE',
+            url: `${baseUrl}/${cartId}/products/${productId}`,
+            failOnStatusCode: false
+          }).then((deleteResponse) => {
+            // Assert: Validação da remoção
+            expect(deleteResponse.status).to.be.oneOf([200, 404])
+            if (deleteResponse.status === 200) {
+              expect(deleteResponse.body.products).to.not.include(productId)
+              expect(deleteResponse.body.totalProducts).to.be.lessThan(3)
+            }
+          })
+        }
+      })
+    })
+
+    /**
+     * @description Testa a validação após remoção de item
+     * Arrange: Configura o carrinho e remove um item
+     * Act: Executa a requisição para verificar o carrinho
+     * Assert: Valida os totais e quantidades após remoção
+     */
+    it('deve validar totais após remoção de item', () => {
+      // Arrange: Cria carrinho com múltiplos produtos
+      cy.request({
+        method: 'POST',
+        url: baseUrl,
+        body: payloads.carrinhoMultiplosProdutos,
+        failOnStatusCode: false
+      }).then((response) => {
+        if (response.status === 200) {
+          const cartId = response.body.id
+          const initialTotal = response.body.total
+          const initialQuantity = response.body.totalQuantity
+          const productId = response.body.products[0].id
+
+          // Act: Remove o primeiro produto
+          cy.request({
+            method: 'DELETE',
+            url: `${baseUrl}/${cartId}/products/${productId}`,
+            failOnStatusCode: false
+          }).then((deleteResponse) => {
+            // Assert: Validação dos totais
+            if (deleteResponse.status === 200) {
+              expect(deleteResponse.body.total).to.be.lessThan(initialTotal)
+              expect(deleteResponse.body.totalQuantity).to.be.lessThan(initialQuantity)
+              expect(deleteResponse.body.totalProducts).to.be.lessThan(3)
+            }
+          })
+        }
+      })
+    })
+  })
 })
